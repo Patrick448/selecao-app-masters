@@ -18,7 +18,7 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-        <h1>Doação de Computadores</h1>
+        <h1>Doação de Computadores Usados</h1>
         {isApiAlive? <p>API Online</p>: <p>API Offline</p>}
     </div>
   )
