@@ -22,8 +22,9 @@ input[type=text], input[type=number], select{
   font-size: medium;
   border-radius: 10px;
   border-width: 1px;
-  
+  margin-bottom: 0.5rem;
 }
+
 
 
 .hide{
