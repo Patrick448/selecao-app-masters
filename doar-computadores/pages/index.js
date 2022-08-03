@@ -112,7 +112,7 @@ export default function Home() {
     console.log("Building form item")
     console.log(donation)
 
-    return <div className="box-1" key={index}>
+    return <div className="box-1">
 
       <div className='label-input-field'>
         <label htmlFor="type">Tipo de equipamento</label>
@@ -285,7 +285,7 @@ export default function Home() {
           <div className='sub-header-container'>
             <h2>Dados das doações</h2>
           </div>
-          {deviceList.map((item, index) => { console.log("mapped: " + item); return <DeviceDataForm item={item} index={index} /> })}
+          {deviceList.map((item, index) => { console.log("mapped: " + item); return <DeviceDataForm key={index} item={item} index={index} /> })}
           <p className={`message ${error ? "error" : "success"}`}>{message}</p>
           <button type="submit">Enviar</button>
         </div>
