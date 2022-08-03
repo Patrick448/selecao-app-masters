@@ -107,26 +107,26 @@ export default function Home() {
   }
 
   const DeviceDataForm = (props) => {
-    let item = props.item
+    let donation = props.item
     let index = props.index
     console.log("Building form item")
-    console.log(item)
+    console.log(donation)
 
     return <div className="box-1" key={index}>
 
       <div className='label-input-field'>
         <label htmlFor="type">Tipo de equipamento</label>
-        <select required defaultValue="none" value={item.type == null ? "none" : item.type} name="type" id="type" form="donation-form" onChange={(e) => onDeviceFormItemChange(e, index)}>
+        <select required defaultValue="none" value={donation.type == null ? "none" : donation.type} name="type" id="type" form="donation-form" onChange={(e) => onDeviceFormItemChange(e, index)}>
           <option disabled value="none"> -- selecione uma opção -- </option>
-          {types.map((item) => <option value={item.id}>{item.displayName}</option>)}
+          {types.map((item) => <option key={"type"+item.id + index} value={item.id}>{item.displayName}</option>)}
         </select>
       </div>
       <div className='label-input-field'>
 
         <label htmlFor="condition">Condição</label>
-        <select required defaultValue="none" value={item.condition == null ? "none" : item.condition} name="condition" id="condition" form="donation-form" onChange={(e) => onDeviceFormItemChange(e, index)}>
+        <select required defaultValue="none" value={donation.condition == null ? "none" : donation.condition} name="condition" id="condition" form="donation-form" onChange={(e) => onDeviceFormItemChange(e, index)}>
           <option disabled value="none"> -- selecione uma opção -- </option>
-          {conditions.map((item) => <option key={item.id} value={item.id}>{item.displayName}</option>)}
+          {conditions.map((item) => <option key={"cond"+item.id + index} value={item.id}>{item.displayName}</option>)}
         </select>
       </div>
     </div>
