@@ -4,15 +4,18 @@ import styles from '../styles/Home.module.css'
 import axios from 'axios'
 import { useState, useEffect } from 'react';
 
+const apiAddess = "https://api-doar-computadores.herokuapp.com"
+const donationRoute = apiAddess + "/donation"
+
 async function getIsAPIAlive() {
-  const response = await axios.get("https://doar-computador-api.herokuapp.com/");
+  const response = await axios.get(apiAddess);
   return response.data.alive;
 }
 
 async function sendData(data) {
 
   try {
-    const response = await axios.post("https://doar-computador-api.herokuapp.com/donation", data);
+    const response = await axios.post(donationRoute, data);
   }
   catch (e) {
 
@@ -34,7 +37,7 @@ async function getZipApi(zipCode) {
     const response = await axios.get(`https://viacep.com.br/ws/${zipCode}/json`);
     console.log(response.data)
 
-    if(response.data.erro == 'true'){
+    if (response.data.erro == 'true') {
       return null;
     }
 
@@ -81,6 +84,7 @@ export default function Home() {
     console.log(num);
     setDeviceCount(num);
 
+
   }
 
   const showDevicesForm = (num) => {
@@ -95,25 +99,36 @@ export default function Home() {
 
 
   const onDeviceFormItemChange = (event, index) => {
-    console.log(event)
-    const arrayList = deviceList
+    console.log(event.target.value)
+    const arrayList = [...deviceList]
     arrayList[index][event.target.name] = event.target.value;
     setDeviceList(arrayList)
+    console.log(deviceList)
   }
 
-  const DeviceDataForm = (item, index) => {
+  const DeviceDataForm = (props) => {
+    let item = props.item
+    let index = props.index
+    console.log("Building form item")
+    console.log(item)
 
     return <div className="box-1" key={index}>
-      <label htmlFor="type">Tipo de equipamento</label>
-      <select required defaultValue="" name="type" id="type" form="donation-form" onChange={(e) => onDeviceFormItemChange(e, index)}>
-        <option disabled value=""> -- selecione uma opção -- </option>
-        {types.map((item) => <option value={item.id}>{item.displayName}</option>)}
-      </select>
-      <label htmlFor="condition">Condição</label>
-      <select required defaultValue="" name="condition" id="condition" form="donation-form" onChange={(e) => onDeviceFormItemChange(e, index)}>
-        <option disabled value=""> -- selecione uma opção -- </option>
-        {conditions.map((item) => <option key={item.id} value={item.id}>{item.displayName}</option>)}
-      </select>
+
+      <div className='label-input-field'>
+        <label htmlFor="type">Tipo de equipamento</label>
+        <select required defaultValue="none" value={item.type == null ? "none" : item.type} name="type" id="type" form="donation-form" onChange={(e) => onDeviceFormItemChange(e, index)}>
+          <option disabled value="none"> -- selecione uma opção -- </option>
+          {types.map((item) => <option value={item.id}>{item.displayName}</option>)}
+        </select>
+      </div>
+      <div className='label-input-field'>
+
+        <label htmlFor="condition">Condição</label>
+        <select required defaultValue="none" value={item.condition == null ? "none" : item.condition} name="condition" id="condition" form="donation-form" onChange={(e) => onDeviceFormItemChange(e, index)}>
+          <option disabled value="none"> -- selecione uma opção -- </option>
+          {conditions.map((item) => <option key={item.id} value={item.id}>{item.displayName}</option>)}
+        </select>
+      </div>
     </div>
   }
 
@@ -129,21 +144,21 @@ export default function Home() {
 
   const handleZipChange = (event) => {
 
-    if(event.target.value.length == 8){
+    if (event.target.value.length == 8) {
       setLoadingZip(true);
-    setZipError(false)
-    getZipApi(event.target.value)
-      .then((data) => {
-        if (data != null) {
-          loadZipDataToForm(data);
-        } else {
-          setZipError(true);
-        }
+      setZipError(false)
+      getZipApi(event.target.value)
+        .then((data) => {
+          if (data != null) {
+            loadZipDataToForm(data);
+          } else {
+            setZipError(true);
+          }
 
-      })
-      .finally(() => { setLoadingZip(false); })
+        })
+        .finally(() => { setLoadingZip(false); })
     }
-    
+
   }
 
 
@@ -179,37 +194,48 @@ export default function Home() {
   }
 
   return (
-    <div className={styles.container}>
-      
+    <div className='container'>
       <div className='header'>
-        <h1>Doação de Computadores Usados</h1>
-        {isApiAlive ? <p>API Online</p> : <p>API Offline</p>}
+          <Image src="/computer-heart-icon.svg"  height={100} width={100} />
+          <div className='header-text'>
+            <h1>Doação de Computadores Usados</h1>
+            {isApiAlive ? <p>API Online</p> : <p>API Offline</p>}
+          </div>
       </div>
       <form id="donation-form" onSubmit={handleSubmit}>
         <div className='form-container'>
           <div className="box-1">
             <h2>Dados do doador</h2>
 
-            <label htmlFor="name">Nome</label>
-            <input type="text" id="name" name="name" required></input>
-            
-            <label htmlFor="email">E-mail</label>
-            <input type="text"  id="email" name="email" pattern='/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/'></input>
-            
-            <label htmlFor="phone"  data-mask="(00) 0000-0000">Telefone</label>
-            <input type="text" id="phone" name="phone" required></input>
-            
-            <label htmlFor="zip">CEP</label>
-            <input type="text" maxLength={9} id="zip" name="zip" onChange={handleZipChange} required></input>
+            <div className='label-input-field'>
+              <label htmlFor="name">Nome</label>
+              <input type="text" id="name" name="name" required></input>
+            </div>
+
+            <div className='label-input-field'>
+              <label htmlFor="email">E-mail</label>
+              <input type="text" id="email" name="email" pattern='/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/'></input>
+            </div>
+
+            <div className='label-input-field'>
+              <label htmlFor="phone">Telefone</label>
+              <input type="text" id="phone" name="phone" required></input>
+            </div>
+
+            <div className='label-input-field'>
+              <label htmlFor="zip">CEP</label>
+              <input type="text" maxLength={9} id="zip" name="zip" onChange={handleZipChange} required></input>
+            </div>
+
             <div className='success'>{loadingZip ? "Carregando endereço" : ""}</div>
             <div className='error'>{zipError ? "CEP inválido" : ""}</div>
 
             <div className='formSection'>
-              <div className='fill'>
+              <div className='fill label-input-field'>
                 <label htmlFor="city">Cidade</label>
                 <input type="text" id="city" name="city" required></input>
               </div>
-              <div className='fill'>
+              <div className='fill label-input-field'>
                 <label htmlFor="state">Estado</label>
                 <input type="text" id="state" name="state" required></input>
               </div>
@@ -218,39 +244,51 @@ export default function Home() {
 
             <div className='formSection'>
 
-              <div className='fill'>
+              <div className='fill label-input-field'>
                 <label htmlFor="streetAddress">Nome do logradouro</label>
                 <input type="text" id="streetAddress" name="streetAddress" required></input>
               </div>
 
-              <div className='fill'>
+              <div className='fill label-input-field'>
                 <label htmlFor="number">Número</label>
                 <input type="text" id="number" name="number" required></input>
               </div>
 
             </div>
 
-            <label htmlFor="complement">Complemento</label>
-            <input type="text" id="complement" name="complement"></input>
+            <div className='label-input-field'>
+              <label htmlFor="complement">Complemento</label>
+              <input type="text" id="complement" name="complement"></input>
+            </div>
 
-            <label htmlFor="neighborhood">Bairro</label>
-            <input type="text" id="neighborhood" name="neighborhood" required></input>
-            
-            <label htmlFor="deviceCount">Número de doações</label>
+            <div className='label-input-field'>
+              <label htmlFor="neighborhood">Bairro</label>
+              <input type="text" id="neighborhood" name="neighborhood" required></input>
+            </div>
+
+
 
             <div className='formSection'>
-              <input type="number" onChange={handleDeviceCountChange} id="deviceCount" name="deviceCount" required />
-              <button type="button" onClick={() => showDevicesForm(deviceCount)}>Continuar</button>
+
+              <div className='label-input-field fill'>
+                <label htmlFor="deviceCount">Número de doações</label>
+                <input type="number" onChange={handleDeviceCountChange} id="deviceCount" name="deviceCount" required />
+              </div>
+              <div className='label-input-field'>
+                <button type="button" onClick={() => showDevicesForm(deviceCount)}>Continuar</button>
+              </div>
             </div>
 
           </div>
         </div>
         <div className={`form-container ${deviceList.length > 0 ? "show" : "hide"}`}>
-          <h2>Dados das doações</h2>
-          {deviceList.map((item, index) => { console.log("mapped: " + item); return DeviceDataForm(item, index) })}
+          <div className='sub-header-container'>
+            <h2>Dados das doações</h2>
+          </div>
+          {deviceList.map((item, index) => { console.log("mapped: " + item); return <DeviceDataForm item={item} index={index} /> })}
+          <p className={`message ${error ? "error" : "success"}`}>{message}</p>
+          <button type="submit">Enviar</button>
         </div>
-        <p className={`message ${error ? "error" : "success"}`}>{message}</p>
-        <button type="submit">Enviar</button>
 
       </form>
     </div>
