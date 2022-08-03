@@ -59,7 +59,21 @@ export default function Home() {
   const [error, setError] = useState(false);
   const [loadingZip, setLoadingZip] = useState(false);
   const [zipError, setZipError] = useState(false);
-
+  const [formData, setFormData] = useState(
+    {
+    name: "",
+    email: "",
+    phone: "",
+    zip: "",
+    city: "",
+    state: "",
+    streetAddress: "",
+    number: "",
+    complement: "",
+    neighborhood: "",
+    deviceCount: "",
+    devices: []
+  })
 
   const types = [
     { displayName: "Notebook", id: "notebook" },
@@ -118,7 +132,7 @@ export default function Home() {
         <label htmlFor="type">Tipo de equipamento</label>
         <select required defaultValue="none" value={donation.type == null ? "none" : donation.type} name="type" id="type" form="donation-form" onChange={(e) => onDeviceFormItemChange(e, index)}>
           <option disabled value="none"> -- selecione uma opção -- </option>
-          {types.map((item) => <option key={"type"+item.id + index} value={item.id}>{item.displayName}</option>)}
+          {types.map((item) => <option key={"type" + item.id + index} value={item.id}>{item.displayName}</option>)}
         </select>
       </div>
       <div className='label-input-field'>
@@ -126,7 +140,7 @@ export default function Home() {
         <label htmlFor="condition">Condição</label>
         <select required defaultValue="none" value={donation.condition == null ? "none" : donation.condition} name="condition" id="condition" form="donation-form" onChange={(e) => onDeviceFormItemChange(e, index)}>
           <option disabled value="none"> -- selecione uma opção -- </option>
-          {conditions.map((item) => <option key={"cond"+item.id + index} value={item.id}>{item.displayName}</option>)}
+          {conditions.map((item) => <option key={"cond" + item.id + index} value={item.id}>{item.displayName}</option>)}
         </select>
       </div>
     </div>
@@ -144,7 +158,7 @@ export default function Home() {
 
   const handleZipChange = (event) => {
 
-    if (event.target.value.length == 8) {
+    if (event.target.value.length >= 8) {
       setLoadingZip(true);
       setZipError(false)
       getZipApi(event.target.value)
@@ -196,11 +210,11 @@ export default function Home() {
   return (
     <div className='container'>
       <div className='header'>
-          <Image src="/computer-heart-icon.svg"  height={100} width={100} />
-          <div className='header-text'>
-            <h1>Doação de Computadores Usados</h1>
-            {isApiAlive ? <p>API Online</p> : <p>API Offline</p>}
-          </div>
+        <Image src="/computer-heart-icon.svg" height={100} width={100} />
+        <div className='header-text'>
+          <h1>Doação de Computadores Usados</h1>
+          {isApiAlive ? <p>API Online</p> : <p>API Offline</p>}
+        </div>
       </div>
       <form id="donation-form" onSubmit={handleSubmit}>
         <div className='form-container'>

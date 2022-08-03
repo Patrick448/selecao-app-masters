@@ -187,13 +187,3 @@ button:hover{
 
 }
 
-
-@media (prefers-color-scheme: light) {
-  html {
-    color-scheme: light;
-  }
-  body {
-    color: white;
-    background: rgb(255, 255, 255);
-  }
-}
