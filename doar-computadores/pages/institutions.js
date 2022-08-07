@@ -59,10 +59,10 @@ export default function InstitutionsList() {
             <p>{props.presentation}</p>
             <div className='social-links-box row'>
 
-                <div><p><a target="_blank" rel="noreferer" href={props.website}>Site</a></p></div>
-                <div><p><a target="_blank" rel="noreferer" href={props.instagram}>Instagram</a></p></div>
-                <div><p><a target="_blank" rel="noreferer" href={props.facebook}>Facebook</a></p></div>
-                <div><p><a target="_blank" rel="noreferer" href={props.whatsapp}>Whatsapp</a></p></div>
+                <div><p><a target="_blank" rel="noreferrer" href={props.website}>Site</a></p></div>
+                <div><p><a target="_blank" rel="noreferrer" href={props.instagram}>Instagram</a></p></div>
+                <div><p><a target="_blank" rel="noreferrer" href={props.facebook}>Facebook</a></p></div>
+                <div><p><a target="_blank" rel="noreferrer" href={props.whatsapp}>Whatsapp</a></p></div>
             </div>
         </div>
     }
