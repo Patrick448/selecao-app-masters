@@ -215,16 +215,17 @@ export default function Home() {
         <div className='header-text'>
           <h1>Doação de Computadores Usados</h1>
           <div className='header-sub-text row'>
-            <div className='header-menu-item'>
-              {isApiAlive ? <p>API Online</p> : <p>API Offline</p>}
+          <div className='online-status'>
+              {isApiAlive ? <p className='success'>API Online</p> : <p className='error'>API Offline</p>}
             </div>
             <div className='header-menu-item'>
               <p>
                 <Link href="/institutions">
-                  <a>Instituições</a>
+                  <a>Ver instituições</a>
                 </Link>
               </p>
             </div>
+
           </div>
 
         </div>
@@ -238,14 +239,12 @@ export default function Home() {
             <FormField
               name="name"
               label="Nome"
-              placeholder="Digite aqui seu nome"
               required={true}
               value={formState.name.value} />
 
             <FormField
               name="email"
               label="E-mail (opcional)"
-              placeholder="Digite aqui seu e-mail"
               required={false}
               value={formState.email.value}
               error={formState.email.editted && !formState.email.valid}
