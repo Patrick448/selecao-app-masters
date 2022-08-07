@@ -132,6 +132,8 @@ export default function Home() {
     newFormState.neighborhood = { value: data.bairro, editted: true, valid: true }
     newFormState.city = { value: data.localidade, editted: true, valid: true }
     newFormState.streetAddress = { value: data.logradouro, editted: true, valid: true }
+    newFormState.complement = { value: data.complemento, editted: true, valid: true }
+
 
     setFormState(newFormState)
     document.getElementById("number").focus()
@@ -139,14 +141,15 @@ export default function Home() {
   }
 
 
-  const handleZipChange = (event) => {
+  const handleZipChange = () => {
 
-    if (event.target.value.length >= 8) {
+    if (formState.zip.valid && formState.zip.editted) {
       setLoadingZip(true);
       setZipError(false)
-      getZipApi(event.target.value)
+      getZipApi(formState.zip.value)
         .then((data) => {
           if (data != null) {
+            setZipError(false);
             loadZipDataToForm(data);
           } else {
             setZipError(true);
@@ -159,35 +162,39 @@ export default function Home() {
   }
 
 
+
+  //faz o envio dos dados, verificando se o formulário está com dados válidos
   const handleSubmit = (event) => {
     event.preventDefault()
-    checkFieldsValid()
+    if (checkFieldsValid()) {
+      const data = {
+        name: formState.name.value,
+        email: formState.email.value,
+        phone: formState.phone.value,
+        zip: formState.zip.value,
+        city: formState.city.value,
+        state: formState.state.value,
+        streetAddress: formState.streetAddress.value,
+        number: formState.number.value,
+        complement: formState.complement.value,
+        neighborhood: formState.neighborhood.value,
+        deviceCount: parseInt(formState.deviceCount.value),
+        devices: deviceList
+      }
 
-    const data = {
-      name: formState.name.value,
-      email: formState.email.value,
-      phone: formState.phone.value,
-      zip: formState.zip.value,
-      city: formState.city.value,
-      state: formState.state.value,
-      streetAddress: formState.streetAddress.value,
-      number: formState.number.value,
-      complement: formState.complement.value,
-      neighborhood: formState.neighborhood.value,
-      deviceCount: parseInt(formState.deviceCount.value),
-      devices: deviceList
+      sendData(data)
+        .then(() => {
+          setMessage("Dados enviados com sucesso");
+          setError(false)
+        })
+        .catch((e) => {
+          setMessage(e.message);
+          setError(true)
+        })
+      //getZipApi(formState.zip.value)
     }
 
-    sendData(data)
-      .then(() => {
-        setMessage("Dados enviados com sucesso");
-        setError(false)
-      })
-      .catch((e) => {
-        setMessage(e.message);
-        setError(true)
-      })
-    getZipApi(formState.zip.value)
+
   }
 
   //valida campos do formulário de dados pessoais
@@ -228,14 +235,28 @@ export default function Home() {
 
   }
 
-  const checkFieldsValid =()=>{
+  const checkFieldsValid = () => {
 
-    for (const item in Object.entries(formState)) {
-      console.log(item)
+    const newFormState = { ...formState };
+    const formValid = true;
+
+    for (const property in formState) {
+      if (formState[property].valid == false) {
+        formValid = false;
+
+      }
     }
+
+    if (formValid == false) {
+      setFormState(newFormState)
+      setError(true)
+      setMessage("Erro: Há campos inválidos no formulário. Verifique os dados.")    
+    }
+
+    return formValid;
   }
 
-  
+
 
   return (
     <div className='container'>
@@ -264,25 +285,32 @@ export default function Home() {
           <div className="box-1">
             <h2 className='form-header'>Dados do doador</h2>
 
-            <div className='label-input-field'>
-              <label htmlFor="name">Nome</label>
-              <input type="text" id="name" name="name" placeholder="Seu nome completo" value={formState.name.value} required></input>
-            </div>
-            
+            <FormField
+              name="name"
+              label="Nome"
+              placeholder="Digite aqui seu nome"
+              required={true}
+              value={formState.name.value} />
 
-            <FormField name="name" label="Nome" placeholder="Digite aqui seu nome" required={true} value={formState.name.value} />
-            <div className='label-input-field'>
-              <label htmlFor="email">E-mail (opcional)</label>
-              <input type="text" id="email" name="email" placeholder="Seu endereço de e-mail" value={formState.email.value} />
-              <div className='error'>{formState.email.editted && !formState.email.valid ? "E-mail inválido" : ""}</div>
-            </div>
+            <FormField
+              name="email"
+              label="E-mail (opcional)"
+              placeholder="Digite aqui seu e-mail"
+              required={false}
+              value={formState.email.value}
+              error={formState.email.editted && !formState.email.valid}
+              errorMessage="E-mail inválido"
+            />
 
-            <div className='label-input-field'>
-              <label htmlFor="phone">Telefone</label>
-              <input type="text" id="phone" name="phone" placeholder='Seu número de telefone (apenas dígitos)' required value={formState.phone.value}></input>
-              <div className='error'>{formState.phone.editted && !formState.phone.valid ? "Número de telefone inválido" : ""}</div>
-
-            </div>
+            <FormField
+              name="phone"
+              label="Telefone"
+              placeholder=""
+              required={true}
+              value={formState.phone.value}
+              error={formState.phone.editted && !formState.phone.valid}
+              errorMessage="Número de telefone inválido"
+            />
 
             <FormField
               label="CEP"
@@ -291,56 +319,75 @@ export default function Home() {
               placeholder=""
               value={formState.zip.value}
               errorMessage="CEP inválido"
-              onChange={handleFormChange} />
+              onChange={(e) => { handleFormChange(e); handleZipChange(e) }} />
 
             <div className='success'>{loadingZip ? "Carregando endereço" : ""}</div>
 
             <div className='formSection'>
-              <div className='fill label-input-field'>
-                <label htmlFor="city">Cidade</label>
-                <input type="text" id="city" name="city" required value={formState.city.value}></input>
-              </div>
-              <div className='fill label-input-field'>
-                <label htmlFor="state">Estado</label>
-                <input type="text" id="state" name="state" required value={formState.state.value}></input>
-              </div>
+              <FormField
+                name="city"
+                label="Cidade"
+                placeholder=""
+                required={true}
+                value={formState.city.value}
+              />
+              <FormField
+                name="state"
+                label="Estado"
+                placeholder=""
+                required={true}
+                value={formState.state.value}
+              />
 
             </div>
 
             <div className='formSection'>
 
-              <div className='fill label-input-field'>
-                <label htmlFor="streetAddress">Nome do logradouro</label>
-                <input type="text" id="streetAddress" name="streetAddress" required value={formState.streetAddress.value}></input>
-              </div>
+              <FormField
+                name="streetAddress"
+                label="Nome do logradouro"
+                placeholder=""
+                required={true}
+                value={formState.streetAddress.value}
+              />
 
-              <div className='fill label-input-field'>
-                <label htmlFor="number">Número</label>
-                <input type="text" id="number" name="number" required value={formState.number.value}></input>
-                <div className='error'>{formState.number.editted && !formState.number.valid ? "Número inválido" : ""}</div>
-
-              </div>
-
+              <FormField
+                name="number"
+                label="Número"
+                placeholder=""
+                required={true}
+                value={formState.number.value}
+              />
             </div>
 
-            <div className='label-input-field'>
-              <label htmlFor="complement">Complemento (opcional)</label>
-              <input type="text" id="complement" name="complement" value={formState.complement.value}></input>
-            </div>
+            <FormField
+              name="complement"
+              label="Complemento (opcional)"
+              placeholder=""
+              required={false}
+              value={formState.complement.value}
+            />
 
-            <div className='label-input-field'>
-              <label htmlFor="neighborhood">Bairro</label>
-              <input type="text" id="neighborhood" name="neighborhood" required value={formState.neighborhood.value}></input>
-            </div>
+            <FormField
+              name="neighborhood"
+              label="Bairro"
+              placeholder=""
+              required={true}
+              value={formState.neighborhood.value}
+            />
 
             <div className='formSection'>
 
-              <div className='label-input-field'>
-                <label htmlFor="deviceCount">Número de doações</label>
-                <input type="text" id="deviceCount" name="deviceCount" value={formState.deviceCount.value} required />
-                <div className='error'>{formState.deviceCount.editted && !formState.deviceCount.valid ? "Quantidade inválida" : ""}</div>
+              <FormField
+                name="deviceCount"
+                label="Número de doações"
+                placeholder=""
+                required={true}
+                value={formState.deviceCount.value}
+                error={formState.deviceCount.editted && !formState.deviceCount.valid}
+                errorMessage="Quantidade inválida"
+              />
 
-              </div>
               <div className='label-input-field'>
                 <button type="button" onClick={() => showDevicesForm(formState.deviceCount.value)}>Continuar</button>
               </div>
@@ -377,6 +424,8 @@ export default function Home() {
   )
 }
 
+
+//Componente contendo entradas necessárias para cada doação
 const DeviceDataForm = (props) => {
   let types = props.types
   let conditions = props.conditions
@@ -389,7 +438,7 @@ const DeviceDataForm = (props) => {
 
     <div className='label-input-field'>
       <label htmlFor="type">Tipo de equipamento</label>
-      <select required defaultValue="none" value={donation.type == null ? "none" : donation.type} name="type" id="type" form="donation-form" onChange={(e) => props.onChange(e, index)}>
+      <select required value={donation.type == null ? "none" : donation.type} name="type" id="type" form="donation-form" onChange={(e) => props.onChange(e, index)}>
         <option disabled value="none"> -- selecione um tipo -- </option>
         {types.map((item) => <option key={"type" + item.id + index} value={item.id}>{item.displayName}</option>)}
       </select>
@@ -397,7 +446,7 @@ const DeviceDataForm = (props) => {
     <div className='label-input-field'>
 
       <label htmlFor="condition">Condição</label>
-      <select required defaultValue="none" value={donation.condition == null ? "none" : donation.condition} name="condition" id="condition" form="donation-form" onChange={(e) => props.onChange(e, index)}>
+      <select required value={donation.condition == null ? "none" : donation.condition} name="condition" id="condition" form="donation-form" onChange={(e) => props.onChange(e, index)}>
         <option disabled value="none"> -- selecione uma condição -- </option>
         {conditions.map((item) => <option key={"cond" + item.id + index} value={item.id}>{item.displayName}</option>)}
       </select>
@@ -405,10 +454,12 @@ const DeviceDataForm = (props) => {
   </div>
 }
 
+
+//Componente contendo input, label e mensagem de erro para uma entrada de dados
 const FormField = (props) => {
   //console.log(props)
 
-  return <div className='label-input-field'>
+  return <div className='fill label-input-field'>
     <label htmlFor={props.name}>{props.label}</label>
     <input type="text" id={props.name} name={props.name} placeholder={props.placeholder} value={props.value} required={props.required} onChange={props.onChange} />
     <div className='error'>{props.error == true ? props.errorMessage : ""}</div>

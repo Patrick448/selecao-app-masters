@@ -92,6 +92,7 @@ input:focus, select:focus{
 }
 
 .message{
+  padding: 1rem;
   max-width: 45rem;
   font-weight: 600;
 }
@@ -158,6 +159,7 @@ h2{
 label{
   font-weight: 500;
   font-size: medium;
+  color: #333;
   margin-left: 0.5rem;
 }
 
