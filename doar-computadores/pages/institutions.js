@@ -59,10 +59,10 @@ export default function InstitutionsList() {
             <p>{props.presentation}</p>
             <div className='social-links-box row'>
 
-                <div><p><a target="_blank" href={props.website}>Site</a></p></div>
-                <div><p><a target="_blank"  href={props.instagram}>Instagram</a></p></div>
-                <div><p><a target="_blank"  href={props.facebook}>Facebook</a></p></div>
-                <div><p><a target="_blank"  href={props.whatsapp}>Whatsapp</a></p></div>
+                <div><p><a target="_blank" rel="noreferer" href={props.website}>Site</a></p></div>
+                <div><p><a target="_blank" rel="noreferer" href={props.instagram}>Instagram</a></p></div>
+                <div><p><a target="_blank" rel="noreferer" href={props.facebook}>Facebook</a></p></div>
+                <div><p><a target="_blank" rel="noreferer" href={props.whatsapp}>Whatsapp</a></p></div>
             </div>
         </div>
     }
@@ -94,6 +94,7 @@ export default function InstitutionsList() {
                     (item) =>
 
                         <Card
+                            key={item.name}
                             name={item.name}
                             city={item.city}
                             neighborhood={item.neighborhood}
