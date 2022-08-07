@@ -21,7 +21,7 @@ export default function InstitutionsList() {
         city: "Rio de Janeiro",
         neighborhood: "Cordovil",
         presentation: "Este projeto é voltado para toda a comunidade, sendo ela carente, com o objetivo principal da inserção desses alunos no mundo digital.  Como a informática é uma ferramenta imprescindível ao trabalho, à comunicação e ao próprio modo de vida contemporânea o seu domínio resulta em uma inserção social mais ampla. Por isso, executamos ações que visam a ampliar o acesso das camadas populares ao mundo digital e que possibilitem esta clientela ingressar no mercado de trabalho. ",
-        contact: { website: "einfojf.com.br", instagram: "@eijf", facebook: "EIJF", whatsapp: "(32) 9 1234-5678" }
+        contact: { website: "http://einfojf.com.br", instagram: "http://instagram.com", facebook: "http://facebook.com", whatsapp: "http://wa.me/32912345678" }
 
     },
     {
@@ -29,7 +29,7 @@ export default function InstitutionsList() {
         city: "Teresópolis",
         neighborhood: "Várzea",
         presentation: "Este projeto é voltado para toda a comunidade, sendo ela carente, com o objetivo principal da inserção desses alunos no mundo digital.  Como a informática é uma ferramenta imprescindível ao trabalho, à comunicação e ao próprio modo de vida contemporânea o seu domínio resulta em uma inserção social mais ampla. Por isso, executamos ações que visam a ampliar o acesso das camadas populares ao mundo digital e que possibilitem esta clientela ingressar no mercado de trabalho. ",
-        contact: { website: "einfojf.com.br", instagram: "@eijf", facebook: "EIJF", whatsapp: "(32) 9 1234-5678" }
+        contact: { website: "http://einfojf.com.br", instagram: "http://instagram.com", facebook: "http://facebook.com", whatsapp: "http://wa.me/32912345678" }
 
     },
     {
@@ -37,7 +37,7 @@ export default function InstitutionsList() {
         city: "Juiz de Fora",
         neighborhood: "Granbery",
         presentation: "Este projeto é voltado para toda a comunidade, sendo ela carente, com o objetivo principal da inserção desses alunos no mundo digital.  Como a informática é uma ferramenta imprescindível ao trabalho, à comunicação e ao próprio modo de vida contemporânea o seu domínio resulta em uma inserção social mais ampla. Por isso, executamos ações que visam a ampliar o acesso das camadas populares ao mundo digital e que possibilitem esta clientela ingressar no mercado de trabalho. ",
-        contact: { website: "einfojf.com.br", instagram: "@eijf", facebook: "EIJF", whatsapp: "(32) 9 1234-5678" }
+        contact: { website: "http://einfojf.com.br", instagram: "http://instagram.com", facebook: "http://facebook.com", whatsapp: "http://wa.me/32912345678" }
 
     },
     {
@@ -45,7 +45,7 @@ export default function InstitutionsList() {
         city: "Juiz de Fora",
         neighborhood: "São Pedro",
         presentation: "Este projeto é voltado para toda a comunidade, sendo ela carente, com o objetivo principal da inserção desses alunos no mundo digital.  Como a informática é uma ferramenta imprescindível ao trabalho, à comunicação e ao próprio modo de vida contemporânea o seu domínio resulta em uma inserção social mais ampla. Por isso, executamos ações que visam a ampliar o acesso das camadas populares ao mundo digital e que possibilitem esta clientela ingressar no mercado de trabalho. ",
-        contact: { website: "einfojf.com.br", instagram: "@eijf", facebook: "EIJF", whatsapp: "(32) 9 1234-5678" }
+        contact: { website: "http://einfojf.com.br", instagram: "http://instagram.com", facebook: "http://facebook.com", whatsapp: "http://wa.me/32912345678" }
 
     }
     ]
