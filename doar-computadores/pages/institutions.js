@@ -51,21 +51,6 @@ export default function InstitutionsList() {
     ]
 
 
-    const Card = (props) => {
-        return <div className="box-1">
-            <h2>{props.name}</h2>
-            <p>{props.neighborhood}, {props.city}</p>
-            <div className='divider'></div>
-            <p>{props.presentation}</p>
-            <div className='social-links-box row'>
-
-                <div><p><a target="_blank" rel="noreferrer" href={props.website}>Site</a></p></div>
-                <div><p><a target="_blank" rel="noreferrer" href={props.instagram}>Instagram</a></p></div>
-                <div><p><a target="_blank" rel="noreferrer" href={props.facebook}>Facebook</a></p></div>
-                <div><p><a target="_blank" rel="noreferrer" href={props.whatsapp}>Whatsapp</a></p></div>
-            </div>
-        </div>
-    }
 
 
     return (
@@ -113,3 +98,19 @@ export default function InstitutionsList() {
 }
 
 
+
+    const Card = (props) => {
+        return <div className="box-1">
+            <h2>{props.name}</h2>
+            <p>{props.neighborhood}, {props.city}</p>
+            <div className='divider'></div>
+            <p>{props.presentation}</p>
+            <div className='social-links-box row'>
+
+                <div><p><a target="_blank" rel="noreferrer" href={props.website}>Site</a></p></div>
+                <div><p><a target="_blank" rel="noreferrer" href={props.instagram}>Instagram</a></p></div>
+                <div><p><a target="_blank" rel="noreferrer" href={props.facebook}>Facebook</a></p></div>
+                <div><p><a target="_blank" rel="noreferrer" href={props.whatsapp}>Whatsapp</a></p></div>
+            </div>
+        </div>
+    }

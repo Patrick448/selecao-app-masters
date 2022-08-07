@@ -4,58 +4,13 @@ import styles from '../styles/Home.module.css'
 import axios from 'axios'
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import  {getZipApi, sendData, getIsAPIAlive} from '../utils/api'
+import DeviceDataForm from '../components/deviceDataForm';
+import FormField from '../components/formField';
 
-
-const apiAddess = "https://api-doar-computadores.herokuapp.com"
-const donationRoute = apiAddess + "/donation"
-
-async function getIsAPIAlive() {
-  const response = await axios.get(apiAddess);
-  return response.data.alive;
-}
-
-async function sendData(data) {
-
-  try {
-    const response = await axios.post(donationRoute, data);
-  }
-  catch (e) {
-
-    if (e.response.request.status == 400) {
-      throw new Error(e.response.data.errorMessage)
-    }
-    else {
-      throw new Error("Houve um erro ao enviar. Tente novamente.")
-    }
-
-
-  }
-
-}
-
-async function getZipApi(zipCode) {
-
-  try {
-    const response = await axios.get(`https://viacep.com.br/ws/${zipCode}/json`);
-    console.log(response.data)
-
-    if (response.data.erro == 'true') {
-      return null;
-    }
-
-    return response.data;
-  }
-  catch (e) {
-    return null
-  }
-
-
-
-}
 
 export default function Home() {
   const [isApiAlive, setIsAPIAlive] = useState(false);
-  const [deviceCount, setDeviceCount] = useState("");
   const [deviceList, setDeviceList] = useState([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState(false);
@@ -95,16 +50,9 @@ export default function Home() {
     getIsAPIAlive().then(result => { setIsAPIAlive(result) })
   }, [])
 
-  const handleDeviceCountChange = (event) => {
-    let num = event.target.value;
-    console.log(num);
-    setDeviceCount(num);
 
-
-  }
-
-  const showDevicesForm = (num) => {
-
+//popula lista de dispositivos a serem doados, com a quatidade dada por num
+  const createDevicesList = (num) => {
     let arrayList = []
 
     for (let i = 0; i < num; i++) {
@@ -113,7 +61,7 @@ export default function Home() {
     }
   }
 
-
+//chamada quando algum item do formulário de dispositivos muda
   const onDeviceFormItemChange = (event, index) => {
     console.log(event.target.value)
     const arrayList = [...deviceList]
@@ -123,7 +71,7 @@ export default function Home() {
   }
 
 
-
+//transfere dados recebidos da API do CEP para o formulário
   const loadZipDataToForm = (data) => {
 
     const newFormState = { ...formState };
@@ -140,7 +88,7 @@ export default function Home() {
 
   }
 
-
+//chama a API do CEP, chamada quando o campo CEP muda
   const handleZipChange = () => {
 
     if (formState.zip.valid && formState.zip.editted) {
@@ -163,7 +111,7 @@ export default function Home() {
 
 
 
-  //faz o envio dos dados, verificando se o formulário está com dados válidos
+  //faz o envio dos dados, verificando antes se o formulário está com dados válidos
   const handleSubmit = (event) => {
     event.preventDefault()
     if (checkFieldsValid()) {
@@ -191,7 +139,6 @@ export default function Home() {
           setMessage(e.message);
           setError(true)
         })
-      //getZipApi(formState.zip.value)
     }
 
 
@@ -224,6 +171,8 @@ export default function Home() {
       const valid = validations[inputName].pattern.test(inputValue);
       console.log("valid " + inputName + ": " + valid);
       newFormState[inputName].valid = valid;
+    }else{
+      newFormState[inputName].valid = true;
     }
 
     newFormState[inputName].value = inputValue;
@@ -235,6 +184,7 @@ export default function Home() {
 
   }
 
+  //verifica se estado do formulário, retornando se é valido ou não e ativando mensagem de erro
   const checkFieldsValid = () => {
 
     const newFormState = { ...formState };
@@ -389,7 +339,7 @@ export default function Home() {
               />
 
               <div className='label-input-field'>
-                <button type="button" onClick={() => showDevicesForm(formState.deviceCount.value)}>Continuar</button>
+                <button type="button" onClick={() => createDevicesList(formState.deviceCount.value)}>Continuar</button>
               </div>
             </div>
 
@@ -422,46 +372,4 @@ export default function Home() {
 
     </div>
   )
-}
-
-
-//Componente contendo entradas necessárias para cada doação
-const DeviceDataForm = (props) => {
-  let types = props.types
-  let conditions = props.conditions
-  let donation = props.item
-  let index = props.index
-  console.log("Building form item")
-  console.log(donation)
-
-  return <div className="device-data-box">
-
-    <div className='label-input-field'>
-      <label htmlFor="type">Tipo de equipamento</label>
-      <select required value={donation.type == null ? "none" : donation.type} name="type" id="type" form="donation-form" onChange={(e) => props.onChange(e, index)}>
-        <option disabled value="none"> -- selecione um tipo -- </option>
-        {types.map((item) => <option key={"type" + item.id + index} value={item.id}>{item.displayName}</option>)}
-      </select>
-    </div>
-    <div className='label-input-field'>
-
-      <label htmlFor="condition">Condição</label>
-      <select required value={donation.condition == null ? "none" : donation.condition} name="condition" id="condition" form="donation-form" onChange={(e) => props.onChange(e, index)}>
-        <option disabled value="none"> -- selecione uma condição -- </option>
-        {conditions.map((item) => <option key={"cond" + item.id + index} value={item.id}>{item.displayName}</option>)}
-      </select>
-    </div>
-  </div>
-}
-
-
-//Componente contendo input, label e mensagem de erro para uma entrada de dados
-const FormField = (props) => {
-  //console.log(props)
-
-  return <div className='fill label-input-field'>
-    <label htmlFor={props.name}>{props.label}</label>
-    <input type="text" id={props.name} name={props.name} placeholder={props.placeholder} value={props.value} required={props.required} onChange={props.onChange} />
-    <div className='error'>{props.error == true ? props.errorMessage : ""}</div>
-  </div>
 }
